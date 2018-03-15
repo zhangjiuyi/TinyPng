@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>图片压缩</title>
+
+  <style>
+    html{
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      text-align: center;
+      background: rgb(221, 221, 221);
+    }
+    ul, li{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    ul>li {
+      text-align: center;
+      margin: 10px;
+    }
+    ul>li> button {
+      font-size: 15px;
+    }
+    .inform {
+      color:rgb(20, 120, 167);
+    }
+  </style>
+</head>
+<body>
+
+  <ul>
+    <li>
+      <button class='compress'>压缩图片</button>
+    </li>
+    <li>
+      <button class='compress-dir'>批量压缩</button>
+    </li>
+  </ul>
+  
+  <input class='key-value' type="text" >
+  <button class='add-key'>添加key</button>
+  <button class='validate'>切换到可用key</button>
+  <hr>
+  
+  <p>
+    说明: 每个key, 每月可压缩500张图片
+    <a href="https://tinypng.com/developers" target='_blank'>申请key</a>
+  </p>
+  <p>
+    当前key压缩数量: <span class='count'></span>
+  </p>
+  <div class="inform"></div>
+  
+  <script src='./app/index.js'></script> 
+</body>
+</html>
