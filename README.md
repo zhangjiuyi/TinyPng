@@ -1,6 +1,6 @@
 ## 一个简单的只能用来压缩图片的小工具
 
-### 前言：
+### 前言：ds
 
 由于部门内部经常要处理压缩图片， [tinyPng](https://tinypng.com/) 在线版的无损压缩做的很好， 但是批量的话一次最多只能处理20张，并且在线版的步骤比较繁琐，所以之前有用
 [tinyPng API](https://tinypng.com/developers/reference/nodejs) 写过一段代码，自己用了一段时间，给部门新人用的时候发现他们还是喜欢图形化的界面，索性就用 [Electron](https://electronjs.org/) 打包了一个桌面版的图形化小工具， 如图：
