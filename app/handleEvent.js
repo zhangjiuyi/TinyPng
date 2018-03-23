@@ -10,14 +10,12 @@ const tinify = require("tinify"),
   keys = require('./updateKey/keys');
 
 const CompressImage = require('./compressImage'),
-  Info = require('./infoText'),
+  info = require('./infoText'),
   { dialog } = require('electron').remote
 
 
 const getOutputPath = require('./getOutputPath')
 const updateKey = require('./updateKey')
-
-
 
 
 
@@ -34,8 +32,6 @@ module.exports = class {
         {name: 'ImageType', extensions:['jpg', 'png']}
       ]
     }
-
-    this.info = new Info()
     this.compress = this.compress.bind(this)
     this.compressDir = this.compressDir.bind(this)
     this.addKey = this.addKey.bind(this)
@@ -52,16 +48,7 @@ module.exports = class {
   
         if (!path) return console.log(`取消选择`)
 
-        this.compressImage = new CompressImage(path, getOutputPath(path[0]))
-
-        try {
-
-          await this.compressImage.compressImage()
-
-        } catch(err) {
-          alert(err)
-        }
-        
+        new CompressImage(path, getOutputPath(path[0]))
       })
   }
 
@@ -92,17 +79,7 @@ module.exports = class {
             }
           }
 
-          this.compressImage = new CompressImage(images, getOutputPath(path[0]))
-    
-          // start compress
-          try {
-
-            let result = await _this.compressImage.compressImage()
-
-          }catch (err) {
-            alert(err)
-          }
-          
+          new CompressImage(images, getOutputPath(path[0]))
       })
     })
   }
@@ -112,30 +89,31 @@ module.exports = class {
   async addKey () {
 
     const KEY = this.keyValue.value.trim()
-  
-    this.info.addKeyText()  // start add key...
+    info.addKeyText()  // start add key...
 
-    if(!await isKeyAvailable(KEY)) {
+    if(await this.isKeyAvailable(KEY)) {
 
-      this.info.keyUnableText()
-    } else {
-  
       for (let key of keys) {
         if( key === KEY) return alert('key值已存在')
       }
 
       keys.unshift(KEY)
       alert(await updateKey(`${JSON.stringify(keys)}`))
+
+    } else {
+
+      info.keyUnavailableText()
     }
   }
-  
+
+
+  // key is available (无法检测当月压缩数量大过 500 的 key)
+  isKeyAvailable (key) {
+    return new Promise( resolve => {
+      tinify.key = key 
+      tinify.validate( err => resolve(!err))
+    })   
+  }
 }
 
 
-// key is available (无法检测当月压缩数量大过 500 的 key)
-function isKeyAvailable (key) {
-  return new Promise( resolve => {
-    tinify.key = key 
-    tinify.validate( err => resolve(!err))
-  })   
-}

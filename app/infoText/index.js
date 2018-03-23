@@ -1,7 +1,10 @@
+/**
+ *  提示信息
+ * 
+ * @ Jiuyi Zhang
+ */
 
-
-
-module.exports = class{
+module.exports = new class{
 
   constructor () {
     this.infoDom = document.querySelector('.inform')
@@ -13,11 +16,15 @@ module.exports = class{
     this.infoDom.innerText= '准备压缩...'
   }
 
+  compressingText () {
+    this.infoDom.innerText= '正在压缩...'
+  }
+
   addKeyText() {
     this.infoDom.innerText= '添加key...'
   }
 
-  keyUnableText() {
+  keyUnavailableText() {
     this.infoDom.innerText= '无效的key!'
   }
 
@@ -39,4 +46,4 @@ module.exports = class{
     this.infoDom.innerText= '压缩成功!'
   }
 
- }
+}()
