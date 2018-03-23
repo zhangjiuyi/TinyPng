@@ -9,8 +9,10 @@
   <style>
     html{
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-      text-align: center;
+      /* text-align: center; */
       background: rgb(221, 221, 221);
+      font-size: 14px;
+      padding: 0 30px 0 50px;
     }
     ul, li{
       list-style: none;
@@ -18,14 +20,22 @@
       padding: 0;
     }
     ul>li {
-      text-align: center;
-      margin: 10px;
+      text-align: left;
+      margin: 25px 0;
     }
-    ul>li> button {
+    ul> li> button {
       font-size: 15px;
     }
     .inform {
       color:rgb(20, 120, 167);
+    }
+    .process{
+      font-size: 12px;
+      color:rgb(20, 120, 167);
+    }
+
+    .count{
+      color: red;
     }
   </style>
 </head>
@@ -37,21 +47,22 @@
     </li>
     <li>
       <button class='compress-dir'>批量压缩</button>
+      <span class='process'></span>
     </li>
   </ul>
   
-  <input class='key-value' type="text" >
-  <button class='add-key'>添加key</button>
-  <button class='validate'>切换到可用key</button>
+ 
+  <!-- <button class='validate'>切换到可用key</button> -->
   <hr>
-  
+  <h4>KEY说明：</h4>
   <p>
-    说明: 每个key, 每月可压缩500张图片
+    每个key, 每月可压缩500张图片, 可用非 QQ 邮箱免费申请key来破除限制
     <a href="https://tinypng.com/developers" target='_blank'>申请key</a>
   </p>
-  <p>
-    当前key压缩数量: <span class='count'></span>
-  </p>
+  <p>当前key压缩数量：<span class='count'></span></p>
+  
+  <input class='key-value' type="text" >
+  <button class='add-key'>添加key</button>
   <div class="inform"></div>
   
   <script src='./app/index.js'></script> 

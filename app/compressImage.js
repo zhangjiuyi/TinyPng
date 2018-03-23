@@ -4,66 +4,138 @@
  * @JiuyiZhang
  */
 
-const tinify = require("tinify"),  
-      path = require('path'),
-      fs = require('fs'),
-      keys = require('./keys');
+const tinify = require("tinify"),
+  path = require('path'),
+  fs = require('fs')
 
 
-const informDom = document.querySelector('.inform'),
-    COMPRESS_COUNT =  document.querySelector('.count');
+const updateKey = require('./updateKey')
+const keys = require('./updateKey/keys')
+
+const Info = require('./infoText')
+
+
+/**
+ * 1 检测当前 key 是否可用
+ * 2 不可用就 换key
+ * 3 检测压缩数量
+ * 4 压缩图片
+ */
+
 
 tinify.key = keys[0]
 
 
+module.exports = class {
 
-// compress image 
-module.exports = (images, outputPath) => {
+  constructor(images, outputPath) {
+    this.info = new Info()
+    this.count = 0  //图片计数
+    this.keyIdx = 0  // key 索引数
+    this.images = images
+    this.totalImgCount = null //图片数量
+    this.outputPath = outputPath
+  }
 
-  let count = 0
-  informDom.innerText = '开始压缩...'
 
-  return new Promise( (resolve, reject) => {
+  //  before compress
+  async compressImage() {
+    this.count = 0
+    this.totalImgCount = this.images.length
+    this.info.startText() 
 
-    for (let image of images) {
-      const outputName = path.basename(image)
+    let result 
+
+    for (let image of this.images) {
+
+      const outputFile = `${this.outputPath}/${path.basename(image)}`
+
+      result = await this.toCompress(image, outputFile)
+    }
+
+    return result
+  }
+
+
+  // compress ...
+  toCompress (image, outFile) {
+
+    return new Promise((resolve,reject) => {
 
       tinify.fromFile(image)
-        .toFile(`${outputPath}/${outputName}`, err => {
+        .toFile(outFile, err => {
+
+          this.info.keyCountText(tinify.compressionCount) 
+
+          // hanlle key amount limit > 500
+          if (tinify.compressionCount >= 500) {
+            return this.handlekeyMax()
+          }
+
           // handle error
-          if (err) return handleError(err, reject)
-          
-          // console.log(tinify.compressionCount)
-          COMPRESS_COUNT.innerText = tinify.compressionCount
+          if (err) {
+            return this.handleError(err)
+          }
 
-          // compress success
-          count++
-          informDom.innerText = `压缩进度: ${count}/${images.length}` 
-          if (count === images.length) resolve()
+          this.toSuccess()
+          resolve()
         })
+
+      })
+    
+  }
+
+
+  // key 超额处理
+  handlekeyMax() {
+    this.info.maxKeyCount()
+
+    tinify.key = keys[++this.keyIdx]
+
+    //更新 key 位置
+    keys.push(keys.shift())
+    updateKey(`${JSON.stringify(keys)}`)
+
+    //重新运行
+    return this.compressImage()
+  }
+
+
+ 
+
+  // success
+  toSuccess () {
+    this.count++
+
+    this.info.procssText (this.count, this.totalImgCount)
+
+    if (this.count === this.totalImgCount) {
+      this.info.successText()
     }
-  })
-}
+  }
 
 
-// handle error
-function handleError(err, reject) {
-  console.log(err.message)
 
-  switch (true) {
-    case (err instanceof tinify.AccountError):
-      reject(`key值无效`)
-      break
-    case (err instanceof tinify.ConnectionError):
-      reject(`网络连接错误`)
-      break
-    case (err instanceof tinify.ClientErrorr):
-      reject( `检查你的图片选项`)
-      break
-    case (err instanceof tinify.ServerError):
-      reject(`服务器错误`)
-      break
-    default: 
-      reject(`其他错误`)
+
+
+  // 处理 error
+  handleError(err) {
+  
+    switch (true) {
+      case (err instanceof tinify.AccountError):
+        alert(`当前key错误`)
+        break
+      case (err instanceof tinify.ConnectionError):
+        alert(`网络连接错误`)
+        break
+      case (err instanceof tinify.ClientErrorr):
+        alert(`检查你的图片选项`)
+        break
+      case (err instanceof tinify.ServerError):
+        alert(`服务器错误`)
+        break
+      default:
+        alert(`其他错误`)
+    }
   }
 }
