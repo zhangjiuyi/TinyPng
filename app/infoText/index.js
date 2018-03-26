@@ -13,7 +13,8 @@ module.exports = new class{
   }
 
   startText () {
-    this.infoDom.innerText= '准备压缩...'
+    this.infoDom.innerText = '准备压缩...'
+    this.process.innerText = ''
   }
 
   compressingText () {

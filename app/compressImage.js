@@ -26,6 +26,8 @@ const info = require('./infoText')
 tinify.key = keys[0]
 
 
+
+
 module.exports = class {
 
   constructor(images, outputPath) {
